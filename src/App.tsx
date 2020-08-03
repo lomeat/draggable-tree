@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { listModel } from "./models";
+import { Sidebar } from "./Sidebar";
+import { Content } from "./Content";
 
 export const App: React.FunctionComponent = () => {
-  const [list, setList] = useState(listModel.state.lists);
-
-  console.log(list);
-
   return (
     <Wrapper>
-      <h1>Hello there</h1>
-      {/* <div>{list}</div> */}
+      <Sidebar />
+      <Content />
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+`;
