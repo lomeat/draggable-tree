@@ -1,14 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import { render } from "react-dom";
+import "normalize.css";
 
-import { App } from './App';
-import * as serviceWorker from './serviceWorker';
+import { App } from "./App";
+import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(
+render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 serviceWorker.unregister();
