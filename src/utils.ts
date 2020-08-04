@@ -5,6 +5,7 @@ export const getList = (size: number) =>
     id: `Item ${Math.floor(Math.random() * Date.now())}`,
     content: faker.random.word(),
     list: [],
+    isListVisible: false,
   }));
 
 export const reorderList = (

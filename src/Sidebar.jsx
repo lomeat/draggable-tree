@@ -23,19 +23,30 @@ export const Sidebar = (props) => {
   };
 
   const addItem = (id) => {
-    setItems((state) =>
-      state.map((item) => {
-        if (item.id === id) {
-          item.list.push({
-            id: `Item ${Math.floor(Math.random() * Date.now())}`,
-            content: faker.random.word(),
-          });
-        }
-        return item;
-      })
-    );
+    const newItems = items.map((item) => {
+      if (item.id === id) {
+        item.list.push({
+          id: `Item ${Math.floor(Math.random() * Date.now())}`,
+          content: faker.random.word(),
+        });
+        item.isListVisible = true;
+      }
+      return item;
+    });
 
-    console.log(items);
+    setItems(newItems);
+  };
+
+  const toggleListVisibility = (id) => {
+    const newItems = items.map((item) => {
+      if (item.id === id) {
+        item.isListVisible = !item.isListVisible;
+        console.log(item);
+      }
+      return item;
+    });
+
+    setItems(newItems);
   };
 
   return (
@@ -52,6 +63,13 @@ export const Sidebar = (props) => {
                       <Title>
                         <Name>{item.content}</Name>
                         <WrapperButtons>
+                          {item.list.length > 0 && (
+                            <ToggleButton
+                              onClick={() => toggleListVisibility(item.id)}
+                            >
+                              {item.isListVisible ? "Hide" : "Show"}
+                            </ToggleButton>
+                          )}
                           <AddButton onClick={() => addItem(item.id)}>
                             Add
                           </AddButton>
@@ -60,12 +78,34 @@ export const Sidebar = (props) => {
                           </DragButton>
                         </WrapperButtons>
                       </Title>
-                      {item.list.length > 0 && (
-                        <InnerList>
-                          {item.list.map((value) => (
-                            <div key={value.content}>{value.content}</div>
-                          ))}
-                        </InnerList>
+                      {item.list.length > 0 && item.isListVisible && (
+                        <Droppable droppableId="droppable-2">
+                          {(provided) => (
+                            <InnerList
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                            >
+                              {item.list.map((item, index) => (
+                                <Draggable
+                                  key={item.id}
+                                  index={index}
+                                  draggableId={item.id}
+                                >
+                                  {(provided) => (
+                                    <Item
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                    >
+                                      {item.content}
+                                    </Item>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </InnerList>
+                          )}
+                        </Droppable>
                       )}
                     </Item>
                   )}
@@ -105,9 +145,6 @@ const Item = styled.div`
   :hover {
     border: 1px solid black;
   }
-  :active {
-    background: #ccc;
-  }
 `;
 
 const Title = styled.div`
@@ -126,12 +163,15 @@ const DragButton = styled.div`
 `;
 
 const AddButton = styled.button`
+  margin-left: 10px;
   border: 1px solid black;
   outline: none;
   :hover {
     cursor: pointer;
   }
 `;
+
+const ToggleButton = styled(AddButton)``;
 
 const Name = styled.span`
   max-width: 200px;
