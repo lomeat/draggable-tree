@@ -29,7 +29,7 @@ export const Sidebar = (props) => {
           id: `Item ${Math.floor(Math.random() * Date.now())}`,
           content: faker.random.word(),
         });
-        item.isListVisible = true;
+        item.isListVisible = false;
       }
       return item;
     });
@@ -60,16 +60,9 @@ export const Sidebar = (props) => {
                 <Draggable key={item.id} draggableId={item.id} index={index}>
                   {(provided, snapshot) => (
                     <Item ref={provided.innerRef} {...provided.draggableProps}>
-                      <Title>
+                      <Title onClick={() => toggleListVisibility(item.id)}>
                         <Name>{item.content}</Name>
                         <WrapperButtons>
-                          {item.list.length > 0 && (
-                            <ToggleButton
-                              onClick={() => toggleListVisibility(item.id)}
-                            >
-                              {item.isListVisible ? "Hide" : "Show"}
-                            </ToggleButton>
-                          )}
                           <AddButton onClick={() => addItem(item.id)}>
                             Add
                           </AddButton>
@@ -97,7 +90,7 @@ export const Sidebar = (props) => {
                                       {...provided.draggableProps}
                                       {...provided.dragHandleProps}
                                     >
-                                      {item.content}
+                                      <Title>{item.content}</Title>
                                     </Item>
                                   )}
                                 </Draggable>
@@ -139,7 +132,6 @@ const Item = styled.div`
   flex-direction: column;
   user-select: none;
   outline: none;
-  padding: 10px;
   transition: background 0.2s ease;
   border: 1px solid transparent;
   :hover {
@@ -148,9 +140,17 @@ const Item = styled.div`
 `;
 
 const Title = styled.div`
+  box-sizing: border-box;
   justify-content: space-between;
+  padding: 10px;
   display: flex;
   width: 100%;
+  :active {
+    background: #ccc;
+  }
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const WrapperButtons = styled.div`
@@ -170,8 +170,6 @@ const AddButton = styled.button`
     cursor: pointer;
   }
 `;
-
-const ToggleButton = styled(AddButton)``;
 
 const Name = styled.span`
   max-width: 200px;
