@@ -10,5 +10,5 @@ export const Content = () => {
 };
 
 const Wrapper = styled.div`
-  flex-grow: 3;
+  width: 100%;
 `;

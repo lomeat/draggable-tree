@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
-import { Sidebar } from "./Sidebar";
+import { Sidebar } from "./Sidebar.jsx";
 import { Content } from "./Content";
 
 export const App: React.FunctionComponent = () => {
