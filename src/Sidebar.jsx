@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import faker from "faker";
 
 import { getList, reorderList } from "./utils";
 
@@ -21,6 +22,22 @@ export const Sidebar = (props) => {
     setItems(newItems);
   };
 
+  const addItem = (id) => {
+    setItems((state) =>
+      state.map((item) => {
+        if (item.id === id) {
+          item.list.push({
+            id: `Item ${Math.floor(Math.random() * Date.now())}`,
+            content: faker.random.word(),
+          });
+        }
+        return item;
+      })
+    );
+
+    console.log(items);
+  };
+
   return (
     <Wrapper>
       <H1>Notes</H1>
@@ -31,12 +48,25 @@ export const Sidebar = (props) => {
               {items.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
                   {(provided, snapshot) => (
-                    <Item
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      {item.content}
+                    <Item ref={provided.innerRef} {...provided.draggableProps}>
+                      <Title>
+                        <Name>{item.content}</Name>
+                        <WrapperButtons>
+                          <AddButton onClick={() => addItem(item.id)}>
+                            Add
+                          </AddButton>
+                          <DragButton {...provided.dragHandleProps}>
+                            Hold
+                          </DragButton>
+                        </WrapperButtons>
+                      </Title>
+                      {item.list.length > 0 && (
+                        <InnerList>
+                          {item.list.map((value) => (
+                            <div key={value.content}>{value.content}</div>
+                          ))}
+                        </InnerList>
+                      )}
                     </Item>
                   )}
                 </Draggable>
@@ -52,6 +82,7 @@ export const Sidebar = (props) => {
 
 const Wrapper = styled.div`
   background: #eee;
+  border-right: 1px solid #ccc;
 `;
 
 const H1 = styled.h1`
@@ -60,11 +91,12 @@ const H1 = styled.h1`
 
 const List = styled.div`
   width: 300px;
-  border-right: 1px solid #ccc;
   box-sizing: border-box;
 `;
 
 const Item = styled.div`
+  display: flex;
+  flex-direction: column;
   user-select: none;
   outline: none;
   padding: 10px;
@@ -76,4 +108,36 @@ const Item = styled.div`
   :active {
     background: #ccc;
   }
+`;
+
+const Title = styled.div`
+  justify-content: space-between;
+  display: flex;
+  width: 100%;
+`;
+
+const WrapperButtons = styled.div`
+  display: flex;
+`;
+
+const DragButton = styled.div`
+  border: 1px solid black;
+  margin-left: 10px;
+`;
+
+const AddButton = styled.button`
+  border: 1px solid black;
+  outline: none;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const Name = styled.span`
+  max-width: 200px;
+  text-overflow: ellipsis;
+`;
+
+const InnerList = styled.div`
+  padding: 10px 0 0 10px;
 `;

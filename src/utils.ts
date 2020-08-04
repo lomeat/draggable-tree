@@ -3,7 +3,8 @@ import faker from "faker";
 export const getList = (size: number) =>
   Array.from({ length: size }, (v, i) => i).map((value) => ({
     id: `Item ${Math.floor(Math.random() * Date.now())}`,
-    content: faker.commerce.productName(),
+    content: faker.random.word(),
+    list: [],
   }));
 
 export const reorderList = (
