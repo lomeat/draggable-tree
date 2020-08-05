@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-export const Content = () => {
+export const Content: React.FC = () => {
   return (
     <Wrapper>
       <p>Hello Content</p>

@@ -5,7 +5,7 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 export type ItemType = {
   id: string;
   content: string;
-  list: object[];
+  list: ItemType[];
   isListVisible: boolean;
 };
 
@@ -26,7 +26,7 @@ const renderInnerList = (
     <Droppable droppableId={item.id}>
       {(provided) => (
         <InnerList {...provided.droppableProps} ref={provided.innerRef}>
-          {item.list.map((item: any, index: number) => (
+          {item.list.map((item: ItemType, index: number) => (
             <Item
               key={item.id}
               item={item}

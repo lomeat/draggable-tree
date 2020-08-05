@@ -36,8 +36,8 @@ export const Sidebar = () => {
           id: `Item ${Math.floor(Math.random() * Date.now())}`,
           content: faker.random.word(),
           list: [],
+          isListVisible: false,
         });
-        item.isListVisible = false;
       }
       return item;
     });

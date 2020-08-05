@@ -2,10 +2,17 @@ import faker from "faker";
 
 import { getList } from "./utils";
 
+type ItemType = {
+  id: string;
+  content: string;
+  list: ItemType[];
+  isListVisible: boolean;
+};
+
 export const listModel = {
   state: getList(10),
   reducers: {
-    reorderList(state: object[], startIndex: number, endIndex: number) {
+    reorderList(state: ItemType[], startIndex: number, endIndex: number) {
       const result = Array.from(state);
       const [removed] = result.splice(startIndex, 1);
       result.splice(endIndex, 0, removed);
@@ -13,7 +20,7 @@ export const listModel = {
       return result;
     },
 
-    addItem(state: object[], id: string) {
+    addItem(state: ItemType[], id: string) {
       const newState: object[] = state.map((item: any) => {
         if (item.id === id) {
           item.list.push({
@@ -28,7 +35,7 @@ export const listModel = {
       return newState;
     },
 
-    toggleVisibility(state: object[], id: string) {
+    toggleVisibility(state: ItemType[], id: string) {
       const newState: object[] = state.map((item: any) => {
         if (item.id === id) {
           item.isListVisible = !item.isListVisible;
