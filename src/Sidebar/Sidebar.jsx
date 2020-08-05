@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import faker from "faker";
 
-import { getList, reorderList } from "./utils";
+import { getList, reorderList } from "../utils";
 
 export const Sidebar = (props) => {
   const [items, setItems] = useState(getList(10));
@@ -28,6 +28,7 @@ export const Sidebar = (props) => {
         item.list.push({
           id: `Item ${Math.floor(Math.random() * Date.now())}`,
           content: faker.random.word(),
+          list: [],
         });
         item.isListVisible = false;
       }
@@ -41,13 +42,48 @@ export const Sidebar = (props) => {
     const newItems = items.map((item) => {
       if (item.id === id) {
         item.isListVisible = !item.isListVisible;
-        console.log(item);
       }
       return item;
     });
 
     setItems(newItems);
   };
+
+  const renderInnerList = (item) =>
+    item.list.length > 0 &&
+    item.isListVisible && (
+      <Droppable droppableId={item.id}>
+        {(provided) => (
+          <InnerList {...provided.droppableProps} ref={provided.innerRef}>
+            {item.list.map((item, index) => (
+              <Draggable key={item.id} index={index} draggableId={item.id}>
+                {(provided) => (
+                  <Item
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <Title onClick={() => toggleListVisibility(item.id)}>
+                      <Name>{item.content}</Name>
+                      <WrapperButtons>
+                        <AddButton onClick={() => addItem(item.id)}>
+                          Add
+                        </AddButton>
+                        <DragButton {...provided.dragHandleProps}>
+                          Hold
+                        </DragButton>
+                      </WrapperButtons>
+                    </Title>
+                    {renderInnerList(item)}
+                  </Item>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </InnerList>
+        )}
+      </Droppable>
+    );
 
   return (
     <Wrapper>
@@ -71,35 +107,7 @@ export const Sidebar = (props) => {
                           </DragButton>
                         </WrapperButtons>
                       </Title>
-                      {item.list.length > 0 && item.isListVisible && (
-                        <Droppable droppableId="droppable-2">
-                          {(provided) => (
-                            <InnerList
-                              {...provided.droppableProps}
-                              ref={provided.innerRef}
-                            >
-                              {item.list.map((item, index) => (
-                                <Draggable
-                                  key={item.id}
-                                  index={index}
-                                  draggableId={item.id}
-                                >
-                                  {(provided) => (
-                                    <Item
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                    >
-                                      <Title>{item.content}</Title>
-                                    </Item>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </InnerList>
-                          )}
-                        </Droppable>
-                      )}
+                      {renderInnerList(item)}
                     </Item>
                   )}
                 </Draggable>
