@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Droppable,
+  DroppableProvided,
+  DropResult,
+} from "react-beautiful-dnd";
 import faker from "faker";
 
 import { getList, reorderList } from "../utils";
-import { Item } from "./Item.jsx";
+import { List } from "./List";
+import { ItemType } from "./Item";
 
-export const Sidebar = (props) => {
+export const Sidebar = () => {
   const [items, setItems] = useState(getList(10));
 
-  const onDragEnd = (result) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
     }
 
-    const newItems = reorderList(
+    const newItems: any = reorderList(
       items,
       result.source.index,
       result.destination.index
@@ -23,8 +29,8 @@ export const Sidebar = (props) => {
     setItems(newItems);
   };
 
-  const addItem = (id) => {
-    const newItems = items.map((item) => {
+  const addItem = (id: string) => {
+    const newItems: any = items.map((item: ItemType) => {
       if (item.id === id) {
         item.list.push({
           id: `Item ${Math.floor(Math.random() * Date.now())}`,
@@ -39,8 +45,8 @@ export const Sidebar = (props) => {
     setItems(newItems);
   };
 
-  const toggleListVisibility = (id) => {
-    const newItems = items.map((item) => {
+  const toggleListVisibility = (id: string) => {
+    const newItems: any = items.map((item: ItemType) => {
       if (item.id === id) {
         item.isListVisible = !item.isListVisible;
       }
@@ -55,18 +61,15 @@ export const Sidebar = (props) => {
       <H1>Notes</H1>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <List {...provided.droppableProps} ref={provided.innerRef}>
-              {items.map((item, index) => (
-                <Item
-                  item={item}
-                  index={index}
-                  toggleListVisibility={toggleListVisibility}
-                  addItem={addItem}
-                />
-              ))}
+          {(provided: DroppableProvided) => (
+            <ListWrapper {...provided.droppableProps} ref={provided.innerRef}>
+              <List
+                items={items}
+                toggleListVisibility={toggleListVisibility}
+                addItem={addItem}
+              />
               {provided.placeholder}
-            </List>
+            </ListWrapper>
           )}
         </Droppable>
       </DragDropContext>
@@ -83,7 +86,7 @@ const H1 = styled.h1`
   padding: 0 10px;
 `;
 
-const List = styled.div`
+const ListWrapper = styled.div`
   min-width: 300px;
   box-sizing: border-box;
 `;

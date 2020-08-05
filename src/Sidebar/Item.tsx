@@ -2,14 +2,33 @@ import React from "react";
 import styled from "styled-components";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
-const renderInnerList = (item, toggleListVisibility, addItem) =>
+export type ItemType = {
+  id: string;
+  content: string;
+  list: object[];
+  isListVisible: boolean;
+};
+
+type ItemProps = {
+  item: ItemType;
+  toggleListVisibility: Function;
+  addItem: Function;
+  index: number;
+};
+
+const renderInnerList = (
+  item: ItemType,
+  toggleListVisibility: Function,
+  addItem: Function
+) =>
   item.list.length > 0 &&
   item.isListVisible && (
     <Droppable droppableId={item.id}>
       {(provided) => (
         <InnerList {...provided.droppableProps} ref={provided.innerRef}>
-          {item.list.map((item, index) => (
+          {item.list.map((item: any, index: number) => (
             <Item
+              key={item.id}
               item={item}
               index={index}
               toggleListVisibility={toggleListVisibility}
@@ -22,7 +41,12 @@ const renderInnerList = (item, toggleListVisibility, addItem) =>
     </Droppable>
   );
 
-export const Item = ({ item, toggleListVisibility, addItem, index }) => (
+export const Item = ({
+  item,
+  toggleListVisibility,
+  addItem,
+  index,
+}: ItemProps) => (
   <Draggable key={item.id} draggableId={item.id} index={index}>
     {(provided, snapshot) => (
       <Wrapper ref={provided.innerRef} {...provided.draggableProps}>
