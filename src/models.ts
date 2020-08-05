@@ -5,7 +5,7 @@ import { getList } from "./utils";
 export const listModel = {
   state: getList(10),
   reducers: {
-    reorderList(state: Array<object>, startIndex: number, endIndex: number) {
+    reorderList(state: object[], startIndex: number, endIndex: number) {
       const result = Array.from(state);
       const [removed] = result.splice(startIndex, 1);
       result.splice(endIndex, 0, removed);
@@ -13,8 +13,8 @@ export const listModel = {
       return result;
     },
 
-    addItem(state: Array<object>, id: string) {
-      const newState = state.map((item: object) => {
+    addItem(state: object[], id: string) {
+      const newState: object[] = state.map((item: any) => {
         if (item.id === id) {
           item.list.push({
             id: `Item ${Math.floor(Math.random() * Date.now())}`,
@@ -28,14 +28,13 @@ export const listModel = {
       return newState;
     },
 
-    toggleVisibility(state: Array<object>, id: string) {
-      const newState = state.map((item: object) => {
+    toggleVisibility(state: object[], id: string) {
+      const newState: object[] = state.map((item: any) => {
         if (item.id === id) {
           item.isListVisible = !item.isListVisible;
         }
         return item;
       });
-
       return newState;
     },
   },
