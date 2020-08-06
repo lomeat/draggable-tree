@@ -4,14 +4,12 @@ import styled from "styled-components";
 import { Sidebar } from "./Sidebar";
 import { Content } from "./Content";
 
-export const App: React.FC = () => {
-  return (
-    <Wrapper>
-      <Sidebar />
-      <Content />
-    </Wrapper>
-  );
-};
+export const App: React.FC = () => (
+  <Wrapper>
+    <Sidebar />
+    <Content />
+  </Wrapper>
+);
 
 const Wrapper = styled.div`
   display: flex;
