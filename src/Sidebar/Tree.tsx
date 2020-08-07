@@ -6,7 +6,7 @@ import { Item } from "./Item";
 import { ItemType } from "../types";
 
 type Props = {
-  id?: any;
+  id?: number;
   items: ItemType[] | undefined;
   parent?: any;
   moveItem: Function;
@@ -61,5 +61,5 @@ export const Tree = DropTarget("ITEM", target, (connect) => ({
 
 const Wrapper = styled.div`
   position: relative;
-  padding-left: 20px;
+  margin-left: 20px;
 `;

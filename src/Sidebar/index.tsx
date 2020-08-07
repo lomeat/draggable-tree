@@ -58,8 +58,6 @@ export const Sidebar = () => {
       return;
     }
 
-    console.log(item);
-
     const dest: any = nodeId ? findItem(nodeId, newTree).children : tree;
 
     if (!afterId) {
@@ -73,7 +71,7 @@ export const Sidebar = () => {
       dest.splice(index, 0, item);
     }
 
-    setTree(tree);
+    setTree(newTree);
   };
 
   const findItem = (id: number, items: ItemType[]): ItemType => {
@@ -92,12 +90,15 @@ export const Sidebar = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <Wrapper>
-        <Tree
-          parent={null}
-          items={tree}
-          moveItem={moveItem}
-          findItem={findItem}
-        />
+        <H1>Notes</H1>
+        <div style={{ marginLeft: "-20px" }}>
+          <Tree
+            parent={null}
+            items={tree}
+            moveItem={moveItem}
+            findItem={findItem}
+          />
+        </div>
       </Wrapper>
     </DndProvider>
   );
@@ -108,5 +109,8 @@ const Wrapper = styled.div`
   border-right: 1px solid #ccc;
   min-width: 300px;
   box-sizing: border-box;
-  padding-top: 20px;
+`;
+
+const H1 = styled.h1`
+  padding: 0 10px;
 `;

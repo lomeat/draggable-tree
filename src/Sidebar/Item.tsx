@@ -87,7 +87,7 @@ export const Item = flow(
 
 const Title = styled.div`
   border: 1px solid transparent;
-  padding: 6px;
+  padding: 4px 10px;
   font-size: 20px;
   transition: 0.1s ease;
   :hover {
