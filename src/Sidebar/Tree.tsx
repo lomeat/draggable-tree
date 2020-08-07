@@ -53,5 +53,6 @@ export const Tree = ({ items, parent, moveItem }: Props) => {
 
 const Wrapper = styled.div`
   position: relative;
-  margin-left: 20px;
+  margin: -11px 0 0 20px;
+  padding-bottom: 6px;
 `;

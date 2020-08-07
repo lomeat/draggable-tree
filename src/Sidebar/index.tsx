@@ -17,7 +17,7 @@ export const Sidebar = () => {
       const newTree = [...tree];
       const item = { ...findItem(id, newTree) };
 
-      if (isNaN(item.id)) return;
+      if (!item.id) return;
 
       const dest: any = nodeId ? findItem(nodeId, newTree).items : newTree;
 

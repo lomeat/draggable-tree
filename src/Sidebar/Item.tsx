@@ -45,8 +45,9 @@ export const Item = ({ item, parent, moveItem }: Props) => {
 };
 
 const Title = styled.div`
-  border: 1px solid transparent;
+  border: 1px solid #ccc;
   padding: 4px 10px;
+  margin-bottom: 10px;
   font-size: 20px;
   transition: 0.1s ease;
   :hover {
