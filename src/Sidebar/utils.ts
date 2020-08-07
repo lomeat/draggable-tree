@@ -31,8 +31,8 @@ export const treeMock = [
 export const findItem = (id: number, items: ItemType[]) => {
   for (const node of items) {
     if (node.id === id) return node;
-    if (node.children && node.children.length) {
-      const result: ItemType = findItem(id, node.children);
+    if (node.items && node.items.length) {
+      const result: ItemType = findItem(id, node.items);
       if (result) {
         return result;
       }
@@ -48,8 +48,8 @@ export const removeNode = (id: number, items: ItemType[]) => {
       return;
     }
 
-    if (node.children && node.children.length) {
-      removeNode(id, node.children);
+    if (node.items && node.items.length) {
+      removeNode(id, node.items);
     }
   }
 };

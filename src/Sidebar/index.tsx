@@ -19,7 +19,7 @@ export const Sidebar = () => {
 
       if (isNaN(item.id)) return;
 
-      const dest: any = nodeId ? findItem(nodeId, newTree).children : newTree;
+      const dest: any = nodeId ? findItem(nodeId, newTree).items : newTree;
 
       if (!afterId) {
         removeNode(id, newTree);

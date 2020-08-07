@@ -22,7 +22,7 @@ const source = {
     return {
       id: props.id,
       parent: props.parent,
-      items: props.item.children,
+      items: props.item.items,
     };
   },
 

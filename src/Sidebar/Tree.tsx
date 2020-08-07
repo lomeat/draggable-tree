@@ -1,63 +1,48 @@
 import React from "react";
 import styled from "styled-components";
-import { DropTarget } from "react-dnd";
+import { useDrop } from "react-dnd";
 
 import { Item } from "./Item";
 import { ItemType } from "./types";
+import { findItem } from "./utils";
 
 type Props = {
   id?: number;
   items: ItemType[] | undefined;
   parent?: any;
   moveItem: Function;
-  findItem: Function;
-  connectDropTarget: Function;
 };
 
-const target = {
-  drop() {},
+export const Tree = ({ items, parent, moveItem }: Props) => {
+  const [{}, dropRef] = useDrop({
+    accept: "item",
+    hover(draggedItem: any, monitor: any) {
+      if (!monitor.isOver({ shallow: true })) return;
 
-  hover(props: Props, monitor: any) {
-    const { id: draggedId, parent, items } = monitor.getItem();
+      const descendantNode: any = findItem(parent, draggedItem.items);
+      if (descendantNode) return;
+      if (draggedItem.parent === parent || draggedItem.id === parent) return;
 
-    if (!monitor.isOver({ shallow: true })) return;
+      moveItem(draggedItem.id, undefined, parent);
+    },
+  });
 
-    const descendantNode = props.findItem(props.parent, items);
-    if (descendantNode) return;
-    if (parent === props.parent || draggedId === props.parent) return;
+  if (!items) return null;
 
-    props.moveItem(draggedId, props.id, props.parent);
-  },
-};
-
-const TreeComponent = ({
-  items,
-  parent,
-  moveItem,
-  findItem,
-  connectDropTarget,
-}: Props) =>
-  connectDropTarget(
-    <div>
-      <Wrapper>
-        {items &&
-          items.map((item: ItemType) => (
-            <Item
-              key={item.id}
-              id={item.id}
-              parent={parent}
-              item={item}
-              moveItem={moveItem}
-              findItem={findItem}
-            />
-          ))}
-      </Wrapper>
-    </div>
+  return (
+    <Wrapper ref={dropRef}>
+      {items.map((item) => (
+        <Item
+          id={item.id}
+          item={item}
+          key={item.id}
+          moveItem={moveItem}
+          parent={parent}
+        />
+      ))}
+    </Wrapper>
   );
-
-export const Tree = DropTarget("ITEM", target, (connect) => ({
-  connectDropTarget: connect.dropTarget(),
-}))(TreeComponent);
+};
 
 const Wrapper = styled.div`
   position: relative;
