@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -10,43 +10,39 @@ import { removeNode, findItem, treeMock } from "./utils";
 export const Sidebar = () => {
   const [tree, setTree] = useState(treeMock);
 
-  const moveItem = (id: number, afterId: number, nodeId: number) => {
-    if (id === afterId) return;
+  const moveItem = useCallback(
+    (id: number, afterId: number, nodeId: number) => {
+      if (id === afterId) return;
 
-    let newTree = tree;
+      const newTree = [...tree];
+      const item = { ...findItem(id, newTree) };
 
-    const item: ItemType = { ...findItem(id, newTree) };
-    if (isNaN(item.id)) {
-      return;
-    }
+      if (isNaN(item.id)) return;
 
-    const dest: any = nodeId ? findItem(nodeId, newTree).children : tree;
+      const dest: any = nodeId ? findItem(nodeId, newTree).children : newTree;
 
-    if (!afterId) {
-      removeNode(id, newTree);
-      dest.push(item);
-    } else {
-      const index = dest.indexOf(
-        dest.filter((a: ItemType) => a.id === afterId).shift()
-      );
-      removeNode(id, newTree);
-      dest.splice(index, 0, item);
-    }
+      if (!afterId) {
+        removeNode(id, newTree);
+        dest.push(item);
+      } else {
+        const index: number = dest.indexOf(
+          dest.filter((destItem: ItemType) => destItem.id === afterId).shift()
+        );
+        removeNode(id, newTree);
+        dest.splice(index, 0, item);
+      }
 
-    setTree(newTree);
-  };
+      setTree(newTree);
+    },
+    [tree]
+  );
 
   return (
     <DndProvider backend={HTML5Backend}>
       <Wrapper>
         <H1>Notes</H1>
         <div style={{ marginLeft: "-20px" }}>
-          <Tree
-            parent={null}
-            items={tree}
-            moveItem={moveItem}
-            findItem={findItem}
-          />
+          <Tree parent={null} items={tree} moveItem={moveItem} />
         </div>
       </Wrapper>
     </DndProvider>
