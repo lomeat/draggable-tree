@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-type Item = {
-  id: number;
-  title: string;
-  children?: Item[];
-};
+import { ItemType } from "../types";
+import { Tree } from "./Tree";
 
 export const Sidebar = () => {
   const [tree, setTree] = useState([
@@ -39,7 +36,7 @@ export const Sidebar = () => {
   const moveItem = (id: number, afterId: number, nodeId: number) => {
     if (id === afterId) return;
 
-    const removeNode = (id: number, items: Item[]) => {
+    const removeNode = (id: number, items: ItemType[]) => {
       for (const node of items) {
         if (node.id === id) {
           items.splice(items.indexOf(node), 1);
@@ -52,7 +49,7 @@ export const Sidebar = () => {
       }
     };
 
-    const item: Item = { ...findItem(id, tree) };
+    const item: ItemType = { ...findItem(id, tree) };
     if (isNaN(item.id)) {
       return;
     }
@@ -64,18 +61,18 @@ export const Sidebar = () => {
       dest.push(item);
     } else {
       const index = dest.indexOf(
-        dest.filter((a: Item) => a.id === afterId).shift()
+        dest.filter((a: ItemType) => a.id === afterId).shift()
       );
       removeNode(id, tree);
       dest.splice(index, 0, item);
     }
   };
 
-  const findItem = (id: number, items: Item[]): Item => {
+  const findItem = (id: number, items: ItemType[]): ItemType => {
     for (const node of items) {
       if (node.id === id) return node;
       if (node.children && node.children.length) {
-        const result: Item = findItem(id, node.children);
+        const result: ItemType = findItem(id, node.children);
         if (result) {
           return result;
         }
@@ -86,7 +83,12 @@ export const Sidebar = () => {
 
   return (
     <Wrapper>
-      <Item>Sidebar</Item>
+      <Tree
+        parent={null}
+        items={tree}
+        moveItem={moveItem}
+        findItem={findItem}
+      />
     </Wrapper>
   );
 };
@@ -96,9 +98,5 @@ const Wrapper = styled.div`
   border-right: 1px solid #ccc;
   min-width: 300px;
   box-sizing: border-box;
-  padding: 20px;
-`;
-
-const Item = styled.div`
-  padding-left: 10px;
+  padding-top: 20px;
 `;
