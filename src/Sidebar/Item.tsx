@@ -1,89 +1,48 @@
 import React from "react";
 import styled from "styled-components";
-import { DropTarget, DragSource } from "react-dnd";
-import flow from "lodash/flow";
+import { useDrag, useDrop } from "react-dnd";
 
 import { Tree } from "./Tree";
 import { ItemType } from "./types";
 
 type Props = {
-  id: any;
+  id: number;
   parent: any;
   item: ItemType;
   moveItem: Function;
-  findItem: Function;
-  connectDropTarget: Function;
-  connectDragSource: Function;
-  connectDragPreview: Function;
 };
 
-const source = {
-  beginDrag(props: Props) {
-    return {
-      id: props.id,
-      parent: props.parent,
-      items: props.item.items,
-    };
-  },
+export const Item = ({ item, parent, moveItem }: Props) => {
+  const [, dropRef] = useDrop({
+    accept: "item",
+    canDrop: () => false,
+    hover: (draggedItem: any, monitor: any) => {
+      if (draggedItem.id === item.id || draggedItem.id === parent) return;
+      if (!monitor.isOver({ shallow: true })) return;
 
-  isDragging(props: Props, monitor: any) {
-    return props.id === monitor.getItem().id;
-  },
-};
+      moveItem(draggedItem.id, item.id, parent);
+    },
+  });
 
-const target = {
-  canDrop() {
-    return false;
-  },
+  const [, dragRef, previewRef] = useDrag({
+    item: {
+      id: item.id,
+      parent,
+      items: item.items,
+      type: "item",
+    },
+    isDragging: (monitor) => item.id === monitor.getItem().id,
+  });
 
-  hover(props: Props, monitor: any) {
-    const { id: draggedId } = monitor.getItem();
-    const { id: overId } = props;
-
-    if (draggedId === overId || draggedId === props.parent) return;
-    if (!monitor.isOver({ shallow: true })) return;
-
-    props.moveItem(draggedId, overId, props.parent);
-  },
-};
-
-const ItemComponent = ({
-  item,
-  parent,
-  moveItem,
-  findItem,
-  connectDropTarget,
-  connectDragSource,
-  connectDragPreview,
-}: Props) =>
-  connectDropTarget(
-    connectDragPreview(
-      <div>
-        {connectDragSource(
-          <div>
-            <Title>{item.title}</Title>
-          </div>
-        )}
-        <Tree
-          parent={item.id}
-          items={item.children}
-          moveItem={moveItem}
-          findItem={findItem}
-        />
+  return (
+    <div ref={dropRef}>
+      <div ref={previewRef}>
+        <Title ref={dragRef}>{item.title}</Title>
+        <Tree parent={item.id} items={item.items} moveItem={moveItem} />
       </div>
-    )
+    </div>
   );
-
-export const Item = flow(
-  DragSource("ITEM", source, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview(),
-    isDragging: monitor.isDragging(),
-  })),
-  DropTarget("ITEM", target, (connect) => ({
-    connectDropTarget: connect.dropTarget(),
-  }))
-)(ItemComponent);
+};
 
 const Title = styled.div`
   border: 1px solid transparent;

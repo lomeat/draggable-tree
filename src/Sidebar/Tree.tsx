@@ -14,9 +14,16 @@ type Props = {
 };
 
 export const Tree = ({ items, parent, moveItem }: Props) => {
-  const [{}, dropRef] = useDrop({
+  const [, dropRef] = useDrop({
     accept: "item",
-    hover(draggedItem: any, monitor: any) {
+    drop: () => {},
+    collect: (monitor: any) => ({
+      isOver: !!monitor.isOver({ shallow: true }),
+      canDrop: !!monitor.canDrop(),
+      item: monitor.getItem(),
+      dropOffset: monitor.getSourceClientOffset(),
+    }),
+    hover: (draggedItem: any, monitor: any) => {
       if (!monitor.isOver({ shallow: true })) return;
 
       const descendantNode: any = findItem(parent, draggedItem.items);
@@ -31,7 +38,7 @@ export const Tree = ({ items, parent, moveItem }: Props) => {
 
   return (
     <Wrapper ref={dropRef}>
-      {items.map((item) => (
+      {items.map((item: ItemType) => (
         <Item
           id={item.id}
           item={item}
