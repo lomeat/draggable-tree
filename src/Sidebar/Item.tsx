@@ -4,7 +4,7 @@ import { DropTarget, DragSource } from "react-dnd";
 import flow from "lodash/flow";
 
 import { Tree } from "./Tree";
-import { ItemType } from "../types";
+import { ItemType } from "./types";
 
 type Props = {
   id: any;

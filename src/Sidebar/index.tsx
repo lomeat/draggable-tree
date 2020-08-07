@@ -3,55 +3,17 @@ import styled from "styled-components";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { ItemType } from "../types";
+import { ItemType } from "./types";
 import { Tree } from "./Tree";
+import { removeNode, findItem, treeMock } from "./utils";
 
 export const Sidebar = () => {
-  const [tree, setTree] = useState([
-    {
-      id: 1,
-      title: "Tatooine",
-      children: [
-        { id: 2, title: "Endor", children: [] },
-        { id: 3, title: "Hoth", children: [] },
-        { id: 4, title: "Dagobah", children: [] },
-      ],
-    },
-    {
-      id: 5,
-      title: "Death Star",
-      children: [],
-    },
-    {
-      id: 6,
-      title: "Alderaan",
-      children: [
-        {
-          id: 7,
-          title: "Bespin",
-          children: [{ id: 8, title: "Jakku", children: [] }],
-        },
-      ],
-    },
-  ]);
+  const [tree, setTree] = useState(treeMock);
 
   const moveItem = (id: number, afterId: number, nodeId: number) => {
     if (id === afterId) return;
 
     let newTree = tree;
-
-    const removeNode = (id: number, items: ItemType[]) => {
-      for (const node of items) {
-        if (node.id === id) {
-          items.splice(items.indexOf(node), 1);
-          return;
-        }
-
-        if (node.children && node.children.length) {
-          removeNode(id, node.children);
-        }
-      }
-    };
 
     const item: ItemType = { ...findItem(id, newTree) };
     if (isNaN(item.id)) {
@@ -72,19 +34,6 @@ export const Sidebar = () => {
     }
 
     setTree(newTree);
-  };
-
-  const findItem = (id: number, items: ItemType[]): ItemType => {
-    for (const node of items) {
-      if (node.id === id) return node;
-      if (node.children && node.children.length) {
-        const result: ItemType = findItem(id, node.children);
-        if (result) {
-          return result;
-        }
-      }
-    }
-    return { id: NaN, title: "Undefined" };
   };
 
   return (

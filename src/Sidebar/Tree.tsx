@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { DropTarget } from "react-dnd";
 
 import { Item } from "./Item";
-import { ItemType } from "../types";
+import { ItemType } from "./types";
 
 type Props = {
   id?: number;
