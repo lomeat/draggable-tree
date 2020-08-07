@@ -17,12 +17,6 @@ export const Tree = ({ items, parent, moveItem }: Props) => {
   const [, dropRef] = useDrop({
     accept: "item",
     drop: () => {},
-    collect: (monitor: any) => ({
-      isOver: !!monitor.isOver({ shallow: true }),
-      canDrop: !!monitor.canDrop(),
-      item: monitor.getItem(),
-      dropOffset: monitor.getSourceClientOffset(),
-    }),
     hover: (draggedItem: any, monitor: any) => {
       if (!monitor.isOver({ shallow: true })) return;
 
@@ -54,5 +48,5 @@ export const Tree = ({ items, parent, moveItem }: Props) => {
 const Wrapper = styled.div`
   position: relative;
   margin: -11px 0 0 20px;
-  padding-bottom: 6px;
+  padding-bottom: 10px;
 `;

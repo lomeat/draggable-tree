@@ -3,26 +3,43 @@ import { ItemType } from "./types";
 export const treeMock = [
   {
     id: 1,
-    title: "Tatooine",
+    title: "Games",
     items: [
-      { id: 2, title: "Endor", items: [] },
-      { id: 3, title: "Hoth", items: [] },
-      { id: 4, title: "Dagobah", items: [] },
+      { id: 2, title: "Borderlands", items: [] },
+      { id: 3, title: "Skyrim", items: [] },
+      { id: 4, title: "The Legend of Zelda", items: [] },
     ],
   },
   {
     id: 5,
-    title: "Death Star",
+    title: "Books",
     items: [],
   },
   {
     id: 6,
-    title: "Alderaan",
+    title: "Music",
     items: [
       {
         id: 7,
-        title: "Bespin",
-        items: [{ id: 8, title: "Jakku", items: [] }],
+        title: "Dubstep",
+        items: [
+          {
+            id: 8,
+            title: "Skrillex",
+            items: [],
+          },
+        ],
+      },
+      {
+        id: 9,
+        title: "Metal",
+        items: [
+          {
+            id: 10,
+            title: "Slayer",
+            items: [],
+          },
+        ],
       },
     ],
   },
