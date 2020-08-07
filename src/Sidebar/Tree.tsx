@@ -1,15 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import { DropTarget } from "react-dnd";
 
 import { Item } from "./Item";
 import { ItemType } from "../types";
 
 type Props = {
   id?: any;
-  items: any;
-  parent: any;
+  items: ItemType[] | undefined;
+  parent?: any;
   moveItem: Function;
   findItem: Function;
+  connectDropTarget: Function;
 };
 
 const target = {
@@ -28,22 +30,34 @@ const target = {
   },
 };
 
-export const Tree = ({ items, parent, moveItem, findItem }: Props) => {
-  return (
-    <Wrapper>
-      {items.map((item: ItemType) => (
-        <Item
-          key={item.id}
-          id={item.id}
-          parent={parent}
-          item={item}
-          moveItem={moveItem}
-          findItem={findItem}
-        />
-      ))}
-    </Wrapper>
+const TreeComponent = ({
+  items,
+  parent,
+  moveItem,
+  findItem,
+  connectDropTarget,
+}: Props) =>
+  connectDropTarget(
+    <div>
+      <Wrapper>
+        {items &&
+          items.map((item: ItemType) => (
+            <Item
+              key={item.id}
+              id={item.id}
+              parent={parent}
+              item={item}
+              moveItem={moveItem}
+              findItem={findItem}
+            />
+          ))}
+      </Wrapper>
+    </div>
   );
-};
+
+export const Tree = DropTarget("ITEM", target, (connect) => ({
+  connectDropTarget: connect.dropTarget(),
+}))(TreeComponent);
 
 const Wrapper = styled.div`
   position: relative;

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { ItemType } from "../types";
 import { Tree } from "./Tree";
@@ -36,6 +38,8 @@ export const Sidebar = () => {
   const moveItem = (id: number, afterId: number, nodeId: number) => {
     if (id === afterId) return;
 
+    let newTree = tree;
+
     const removeNode = (id: number, items: ItemType[]) => {
       for (const node of items) {
         if (node.id === id) {
@@ -49,23 +53,27 @@ export const Sidebar = () => {
       }
     };
 
-    const item: ItemType = { ...findItem(id, tree) };
+    const item: ItemType = { ...findItem(id, newTree) };
     if (isNaN(item.id)) {
       return;
     }
 
-    const dest: any = nodeId ? findItem(nodeId, tree).children : tree;
+    console.log(item);
+
+    const dest: any = nodeId ? findItem(nodeId, newTree).children : tree;
 
     if (!afterId) {
-      removeNode(id, tree);
+      removeNode(id, newTree);
       dest.push(item);
     } else {
       const index = dest.indexOf(
         dest.filter((a: ItemType) => a.id === afterId).shift()
       );
-      removeNode(id, tree);
+      removeNode(id, newTree);
       dest.splice(index, 0, item);
     }
+
+    setTree(tree);
   };
 
   const findItem = (id: number, items: ItemType[]): ItemType => {
@@ -82,14 +90,16 @@ export const Sidebar = () => {
   };
 
   return (
-    <Wrapper>
-      <Tree
-        parent={null}
-        items={tree}
-        moveItem={moveItem}
-        findItem={findItem}
-      />
-    </Wrapper>
+    <DndProvider backend={HTML5Backend}>
+      <Wrapper>
+        <Tree
+          parent={null}
+          items={tree}
+          moveItem={moveItem}
+          findItem={findItem}
+        />
+      </Wrapper>
+    </DndProvider>
   );
 };
 

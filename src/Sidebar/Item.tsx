@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { DropTarget, DragSource } from "react-dnd";
+import flow from "lodash/flow";
 
 import { Tree } from "./Tree";
 import { ItemType } from "../types";
@@ -11,10 +12,13 @@ type Props = {
   item: ItemType;
   moveItem: Function;
   findItem: Function;
+  connectDropTarget: Function;
+  connectDragSource: Function;
+  connectDragPreview: Function;
 };
 
 const source = {
-  startDragging(props: Props) {
+  beginDrag(props: Props) {
     return {
       id: props.id,
       parent: props.parent,
@@ -43,19 +47,43 @@ const target = {
   },
 };
 
-export const Item = ({ item, parent, moveItem, findItem }: Props) => {
-  return (
-    <div>
-      <Title>{item.title}</Title>
-      <Tree
-        parent={item.id}
-        items={item.children}
-        moveItem={moveItem}
-        findItem={findItem}
-      />
-    </div>
+const ItemComponent = ({
+  item,
+  parent,
+  moveItem,
+  findItem,
+  connectDropTarget,
+  connectDragSource,
+  connectDragPreview,
+}: Props) =>
+  connectDropTarget(
+    connectDragPreview(
+      <div>
+        {connectDragSource(
+          <div>
+            <Title>{item.title}</Title>
+          </div>
+        )}
+        <Tree
+          parent={item.id}
+          items={item.children}
+          moveItem={moveItem}
+          findItem={findItem}
+        />
+      </div>
+    )
   );
-};
+
+export const Item = flow(
+  DragSource("ITEM", source, (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
+    isDragging: monitor.isDragging(),
+  })),
+  DropTarget("ITEM", target, (connect) => ({
+    connectDropTarget: connect.dropTarget(),
+  }))
+)(ItemComponent);
 
 const Title = styled.div`
   border: 1px solid transparent;
